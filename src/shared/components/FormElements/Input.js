@@ -1,0 +1,83 @@
+import React, { useReducer } from 'react';
+
+import { validate } from '../../util/validators';
+import './Input.css';
+
+const inputReducer = (state, action) => {
+  switch (action.type) {
+    case 'CHANGE':
+      return {//new state which we will return
+        ...state,//copy old state
+        value: action.val,//here action is a val datatype
+        isValid: validate(action.val, action.validators)
+      };
+    case 'TOUCH': {
+      return {
+        ...state,
+        isTouched: true
+      }
+    }
+    default:
+      return state;//return original state
+  }
+};
+
+const Input = props => {
+    // const[enteredValue,setEnteredValue]=useState('');
+    // const[isValid,setIsValid]=useState(false);
+
+
+  const [inputState, dispatch] = useReducer(inputReducer, {
+    value: '',
+    isTouched: false,
+    isValid: false
+  });
+
+  const changeHandler = event => {
+    dispatch({
+      type: 'CHANGE',
+      val: event.target.value,
+      validators: props.validators
+    });
+  };
+
+  const touchHandler = () => {//msg should be only displayed if user lost attention form that title bar
+    dispatch({
+      type: 'TOUCH'
+    });
+  };
+
+  const element =
+    props.element === 'input' ? (
+      <input
+        id={props.id}
+        type={props.type}
+        placeholder={props.placeholder}
+        onChange={changeHandler}
+        onBlur={touchHandler}
+        value={inputState.value}
+      />
+    ) : (
+      <textarea
+        id={props.id}
+        rows={props.rows || 3}
+        onChange={changeHandler}
+        onBlur={touchHandler}
+        value={inputState.value}
+      />
+    );
+
+  return (
+    <div
+      className={`form-control ${!inputState.isValid && inputState.isTouched &&
+        'form-control--invalid'}`}
+    >
+      <label htmlFor={props.id}>{props.label}</label>
+      {element}
+      {/* output of element */}
+      {!inputState.isValid && inputState.isTouched && <p>{props.errorText}</p>}
+    </div>
+  );
+};
+
+export default Input;

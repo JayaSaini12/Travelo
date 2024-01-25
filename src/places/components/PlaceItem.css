@@ -48,6 +48,22 @@
     margin: 0.5rem;
   }
   
+.map-container{
+  margin-top: 1rem;
+  height:10rem;
+  width:100%;
+  padding-top: 3%;
+  background-color: bisque;
+}
+.map-container h2 h3{
+  margin-top: 1rem;
+  height:10rem;
+  width:100%;
+  padding-top: 3%;
+  text-align: center;
+  background-color: bisque;
+}
+
   @media (min-width: 768px) {
     .place-item__image {
       height: 20rem;
