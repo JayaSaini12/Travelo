@@ -5,8 +5,12 @@ import Button from '../../shared/components/FormElements/Button';
 import Modal from '../../shared/components/UIElements/MOdal';
 import { AuthContext } from '../../shared/context/auth-context';
 import './PlaceItem.css';
+import { useHttpClient } from '../../shared/hooks/http-hook';
+import ErrorModal from '../../shared/components/UIElements/ErrorModal';
+import LoadingSpinner from '../../shared/components/UIElements/LoaingSpinner';
 
 const PlaceItem = props => {
+  const{isLoading,error,sendRequest,clearError}=useHttpClient();
   const auth=useContext(AuthContext);//to control the buttons
 
   const [showMap, setShowMap] = useState(false);
@@ -25,14 +29,20 @@ const PlaceItem = props => {
     setShowConfirmModal(false);
   };
 
-  const confirmDeleteHandler=()=>{
+  const confirmDeleteHandler=async ()=>{
     setShowConfirmModal(false);//to close the modal
-    console.log('DELETING...');
+    try{
+      await sendRequest(`http://localhost:5000/api/places/${props.id}`,'DELETE');
+      props.onDelete(props.id);
+    }catch(err){
+
+    }
   };
 
 
   return (
     <React.Fragment>
+      <ErrorModal error={error} onclear={clearError}/>
       <Modal
         show={showMap}
         onCancel={closeMapHandler}
@@ -65,6 +75,7 @@ const PlaceItem = props => {
       </Modal>
       <li className="place-item">
         <Card className="place-item__content">
+          {isLoading && <LoadingSpinner asOverlay/>}
           <div className="place-item__image">
             <img src={props.image} alt={props.title} />
           </div>
@@ -76,7 +87,7 @@ const PlaceItem = props => {
           <div className="place-item__actions">
             <Button inverse onClick={openMapHandler}>VIEW ON MAP</Button>
             {/* if logged in is truw then only can see this button */}
-            {auth.isLoggedIn && <Button to={`/places/${props.id}`}>EDIT</Button>}
+            {auth.userId===props.creatorId && <Button to={`/places/${props.id}`}>EDIT</Button>}
             {auth.isLoggedIn && <Button danger onClick={showDeleteWarningHandler}>DELETE</Button>}
           </div>
         </Card>

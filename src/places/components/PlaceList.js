@@ -24,12 +24,13 @@ const PlaceList=props=>{
                 (<PlaceItem 
                     key={place.id} 
                     id={place.id} 
-                    image={place.imageUrl} 
+                    image={place.image} 
                     title={place.title} 
                     description={place.description} 
                     address={place.address} 
                     creatorid={place.creator} 
                     coordinates={place.location} 
+                    onDelete={props.onDeletePlace}
                 />))
             }
         </ul>
