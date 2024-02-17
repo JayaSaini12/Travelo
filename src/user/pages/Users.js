@@ -4,30 +4,40 @@ import UsersList from '../components/UsersList';
 
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoaingSpinner';
-import { useHttpClient } from '../../shared/hooks/http-hook';
 
 const Users = () => {
-  const{isLoading,error,sendRequest,clearError}=useHttpClient();
+  const[isLoading,setIsLoading]=useState(false);
+  const[error,setError]=useState();
   const[loadedUsers,setLoadedUsers]=useState();
 
   useEffect(()=>{
-    const fetchUsers=async()=>{
+    const sendRequest=async()=>{
+      setIsLoading(true);
       try{
-        const responseData= await sendRequest('http://localhost:5000/api/users');
+        const response= await fetch('http://localhost:5000/api/users');
 
-      // const responseData=await response.json();
+      const responseData=await response.json();
+
+      if(!response.ok){
+        throw new Error(responseData.message);
+      }
 
       setLoadedUsers(responseData.users);//as in backednd we have userkey
-      }catch(err){     
+      }catch(err){
+        setError(err.message);
       }
+      setIsLoading(false);
     };
-    fetchUsers();
-  },[sendRequest]);//now this is called whever this page loads and in auth we fetch whenevr we pressed button and passed it in a function
+    sendRequest();
+  },[]);//now this is called whever this page loads and in auth we fetch whenevr we pressed button and passed it in a function
 
+  const errorHandler=()=>{
+    setError(null);
+  }
 
   return(
     <React.Fragment>
-      <ErrorModal error={error} onClear={clearError}/>
+      <ErrorModal error={error} onClear={errorHandler}/>
       {isLoading && (
         <div className="center">
           <LoadingSpinner/>

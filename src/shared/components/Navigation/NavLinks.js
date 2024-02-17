@@ -15,7 +15,7 @@ const NavLinks=props=>{//this component will rerender whenever this context chan
             </li>
             {auth.isLoggedIn &&(
                 <li>
-                <NavLink to={`/${auth.userId}/places`} exact>MY PLACES</NavLink>
+                <NavLink to="/u1/places" exact>MY PLACES</NavLink>
                 </li>
             )}
             {auth.isLoggedIn &&(
