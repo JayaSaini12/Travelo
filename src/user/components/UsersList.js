@@ -10,7 +10,7 @@ const UsersList = props => {
       <div className="center">
         <Card>
           <h2>No users found.</h2>
-        </Card>  
+        </Card>
       </div>
     );
   }
@@ -23,8 +23,7 @@ const UsersList = props => {
           id={user.id}
           image={user.image}
           name={user.name}
-          // placeCount={user.places}
-          placeCount={user && user.places ? user.places.length : 0}
+          placeCount={user.places}
         />
       ))}
     </ul>
@@ -32,3 +31,4 @@ const UsersList = props => {
 };
 
 export default UsersList;
+
